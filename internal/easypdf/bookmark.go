@@ -7,7 +7,6 @@ import (
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
 )
 
-// A BookmarkTree represents a bookmark hierarchy.
 type BookmarkTree struct{ TopLevel []*Bookmark }
 
 func (t *BookmarkTree) Count() int {
@@ -19,8 +18,8 @@ func (t *BookmarkTree) Count() int {
 }
 
 // Inspect traverses the bookmark tree in depth-first order. For each top-level
-// bookmark b, Inspect calls f(b), then invokes f recursively for each of the
-// non-nil children of b.
+// bookmark b, Inspect calls f(b), then invokes f recursively for each child of
+// b.
 func (t *BookmarkTree) Inspect(f func(*Bookmark)) {
 	var visitAll func([]*Bookmark)
 	visitAll = func(bookmarks []*Bookmark) {
