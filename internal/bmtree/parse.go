@@ -112,7 +112,7 @@ func (p *parseState) insertBookmark(depth int, page int, title string) error {
 		par := p.parent[len(p.parent)-1]
 		par.Children = append(par.Children, b)
 	} else {
-		p.bookmarks.toplevel = append(p.bookmarks.toplevel, b)
+		p.bookmarks.TopLevel = append(p.bookmarks.TopLevel, b)
 	}
 
 	p.prev = b

@@ -50,14 +50,14 @@ func main() {
 	}
 
 	fmt.Printf("adding %d bookmarks to PDF ... ", bookmarks.Count())
-	err = editBookmarks(flag.Arg(1), flag.Arg(2), *replaceFlag, bookmarks.ToPdfCpu())
+	err = editBookmarks(flag.Arg(1), flag.Arg(2), *replaceFlag, bookmarks)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	fmt.Println("ok")
 }
 
-func editBookmarks(inputFilename, outputFilename string, replace bool, bookmarks []pdfcpu.Bookmark) error {
+func editBookmarks(inputFilename, outputFilename string, replace bool, bookmarks *bmtree.Tree) error {
 	inFile, err := os.Open(inputFilename)
 	if err != nil {
 		return err
@@ -70,10 +70,34 @@ func editBookmarks(inputFilename, outputFilename string, replace bool, bookmarks
 	}
 	defer tmpFile.Close()
 
-	err = api.AddBookmarks(inFile, tmpFile, bookmarks, replace, nil)
+	err = api.AddBookmarks(inFile, tmpFile, convertBookmarks(bookmarks), replace, nil)
 	if err != nil {
-		return fmt.Errorf("could not bookmarks: %s", err)
+		return fmt.Errorf("could not edit bookmarks: %s", err)
 	}
 
 	return os.Rename(tmpFile.Name(), outputFilename)
+}
+
+func convertBookmarks(bookmarks *bmtree.Tree) []pdfcpu.Bookmark {
+	var convertAll func([]*bmtree.Bookmark) []pdfcpu.Bookmark
+	convertAll = func(bookmarks []*bmtree.Bookmark) []pdfcpu.Bookmark {
+		if len(bookmarks) == 0 {
+			// HACK: pdfcpu panics given a bookmark with empty but non-nil
+			// children slice, so ensure we always pass nil. See
+			// https://github.com/pdfcpu/pdfcpu/issues/669.
+			return nil
+		}
+
+		converted := make([]pdfcpu.Bookmark, len(bookmarks))
+		for i, b := range bookmarks {
+			converted[i] = pdfcpu.Bookmark{
+				PageFrom: b.Page,
+				Title:    b.Title,
+				Children: convertAll(b.Children),
+			}
+		}
+		return converted
+	}
+
+	return convertAll(bookmarks.TopLevel)
 }

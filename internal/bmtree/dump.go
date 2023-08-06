@@ -7,7 +7,7 @@ import (
 
 func dump(bookmarks *Tree) string {
 	var sb strings.Builder
-	for i, b := range bookmarks.toplevel {
+	for i, b := range bookmarks.TopLevel {
 		if i > 0 {
 			sb.WriteByte('\n')
 		}
