@@ -73,7 +73,14 @@ The above creates three bookmarks: one to page 1 of the PDF titled "Cover", one
 to page 4 of the PDF titled "Table of Contents", and another to page 7 of the
 PDF titled "Mechanics".
 
+# Contributing
+
+Contributions in the form of issue reports or pull requests are welcomed. Those
+hacking on the markpdf codebase may find it informative to read through
+[CONTRIBUTING.md](./CONTRIBUTING.md), which explains how the project is
+structured.
+
 # Author
 
-markpdf is authored and maintained by [Joe L](https://github.com/jo3-l/) and is
+markpdf is authored and maintained by [Joe L.](https://github.com/jo3-l/) and is
 made available under the terms of the [MIT license](./LICENSE.md).
