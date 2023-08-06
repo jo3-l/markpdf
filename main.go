@@ -41,7 +41,7 @@ func main() {
 
 	bookmarks, err := bmtree.ParseReader(bookmarkFile)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("could not parse bookmarks:", err)
 	}
 
 	errs := RunChecks(AllChecks, bookmarks)
