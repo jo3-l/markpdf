@@ -33,20 +33,20 @@ contain whitespace or begin with a `#` will be ignored. A single bookmark has
 the following format:
 
 ```
-p<page_number>: <title>
+p<page_number>. <title>
 ```
 
-For example, `p1: Introduction` specifies a bookmark titled `Introduction`
+For example, `p1. Introduction` specifies a bookmark titled `Introduction`
 pointing to page 1.
 
 Bookmarks may be arbitrarily nested using indentation to create a hierarchy. For
 example:
 
 ```
-p1: Data structures
-    p1: Stacks and queues
-        p3: Deques
-    p5: Circular lists
+p1. Data structures
+    p1. Stacks and queues
+        p3. Deques
+    p5. Circular lists
 ```
 
 corresponds to a bookmark hierarchy with one top-level bookmark, "Data structures",
@@ -62,11 +62,11 @@ but rather to, say, page 7, the first page of content. To do this, use the `set`
 command. For example:
 
 ```
-p1: Cover
-p4: Table of Contents
+p1. Cover
+p4. Table of Contents
 
 set 7
-p1: Mechanics
+p1. Mechanics
 ```
 
 The above creates three bookmarks: one to page 1 of the PDF titled "Cover", one
