@@ -11,7 +11,12 @@ type Check interface {
 	AppendErrors([]error, *easypdf.BookmarkTree, *easypdf.PDFInfo) []error
 }
 
-var AllChecks = []Check{&NonEmptyCheck{}, &MonotonicallyIncreasingPageNumsCheck{}, &UniqueTitlesCheck{}}
+var AllChecks = []Check{
+	&NonEmptyCheck{},
+	&MonotonicallyIncreasingPageNumsCheck{},
+	&UniqueTitlesCheck{},
+	&ValidPageNumsCheck{},
+}
 
 func RunChecks(checks []Check, bookmarks *easypdf.BookmarkTree, p *easypdf.PDFInfo) []error {
 	var errs []error
@@ -65,5 +70,16 @@ func (*UniqueTitlesCheck) AppendErrors(errs []error, bookmarks *easypdf.Bookmark
 			errs = append(errs, fmt.Errorf("bookmark title %q is duplicated %d times; titles must be unique", title, occurrences))
 		}
 	}
+	return errs
+}
+
+type ValidPageNumsCheck struct{}
+
+func (*ValidPageNumsCheck) AppendErrors(errs []error, bookmarks *easypdf.BookmarkTree, p *easypdf.PDFInfo) []error {
+	bookmarks.Inspect(func(b *easypdf.Bookmark) {
+		if b.Page < 1 || b.Page > p.PageCount {
+			errs = append(errs, fmt.Errorf("page number %d out of range (must be between 1-%d)", b.Page, p.PageCount))
+		}
+	})
 	return errs
 }
