@@ -4,19 +4,19 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/jo3-l/markpdf/internal/bmtree"
+	"github.com/jo3-l/markpdf/internal/easypdf"
 )
 
 type Check interface {
-	AppendErrors([]error, *bmtree.Tree) []error
+	AppendErrors([]error, *easypdf.BookmarkTree, *easypdf.PDFInfo) []error
 }
 
 var AllChecks = []Check{&NonEmptyCheck{}, &MonotonicallyIncreasingPageNumsCheck{}, &UniqueTitlesCheck{}}
 
-func RunChecks(checks []Check, bookmarks *bmtree.Tree) []error {
+func RunChecks(checks []Check, bookmarks *easypdf.BookmarkTree, p *easypdf.PDFInfo) []error {
 	var errs []error
 	for _, c := range checks {
-		errs = c.AppendErrors(errs, bookmarks)
+		errs = c.AppendErrors(errs, bookmarks, p)
 	}
 	return errs
 }
@@ -25,7 +25,7 @@ func RunChecks(checks []Check, bookmarks *bmtree.Tree) []error {
 // https://github.com/pdfcpu/pdfcpu/blob/a9afcfe683880972fbbb576e12ef74688005ed3a/pkg/api/bookmark.go#L40.
 type NonEmptyCheck struct{}
 
-func (*NonEmptyCheck) AppendErrors(errs []error, bookmarks *bmtree.Tree) []error {
+func (*NonEmptyCheck) AppendErrors(errs []error, bookmarks *easypdf.BookmarkTree, _ *easypdf.PDFInfo) []error {
 	if bookmarks.Count() == 0 {
 		return append(errs, errors.New("no bookmarks specified"))
 	}
@@ -36,9 +36,9 @@ func (*NonEmptyCheck) AppendErrors(errs []error, bookmarks *bmtree.Tree) []error
 // https://github.com/pdfcpu/pdfcpu/issues/376.
 type MonotonicallyIncreasingPageNumsCheck struct{}
 
-func (*MonotonicallyIncreasingPageNumsCheck) AppendErrors(errs []error, bookmarks *bmtree.Tree) []error {
-	var prev *bmtree.Bookmark
-	bookmarks.Inspect(func(b *bmtree.Bookmark) {
+func (*MonotonicallyIncreasingPageNumsCheck) AppendErrors(errs []error, bookmarks *easypdf.BookmarkTree, _ *easypdf.PDFInfo) []error {
+	var prev *easypdf.Bookmark
+	bookmarks.Inspect(func(b *easypdf.Bookmark) {
 		if prev != nil && b.Page < prev.Page {
 			err := fmt.Errorf("bookmark %q (pg %d) appears after bookmark %q (pg %d) but has lower page number; this is not supported",
 				b.Title, b.Page,
@@ -54,9 +54,9 @@ func (*MonotonicallyIncreasingPageNumsCheck) AppendErrors(errs []error, bookmark
 // https://github.com/pdfcpu/pdfcpu/issues/664.
 type UniqueTitlesCheck struct{}
 
-func (*UniqueTitlesCheck) AppendErrors(errs []error, bookmarks *bmtree.Tree) []error {
+func (*UniqueTitlesCheck) AppendErrors(errs []error, bookmarks *easypdf.BookmarkTree, _ *easypdf.PDFInfo) []error {
 	count := make(map[string]int)
-	bookmarks.Inspect(func(b *bmtree.Bookmark) {
+	bookmarks.Inspect(func(b *easypdf.Bookmark) {
 		count[b.Title] += 1
 	})
 

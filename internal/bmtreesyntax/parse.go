@@ -1,4 +1,4 @@
-package bmtree
+package bmtreesyntax
 
 import (
 	"bufio"
@@ -7,11 +7,13 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/jo3-l/markpdf/internal/easypdf"
 )
 
-func ParseReader(r io.Reader) (*Tree, error) {
+func ParseReader(r io.Reader) (*easypdf.BookmarkTree, error) {
 	sc := bufio.NewScanner(r)
-	state := &parseState{lineno: 1, pageOffset: 1, bookmarks: &Tree{}}
+	state := newParseState()
 	for sc.Scan() {
 		if err := state.process(sc.Text()); err != nil {
 			return nil, err
@@ -25,13 +27,17 @@ func ParseReader(r io.Reader) (*Tree, error) {
 	return state.bookmarks, nil
 }
 
+func newParseState() *parseState {
+	return &parseState{lineno: 1, pageOffset: 1, bookmarks: &easypdf.BookmarkTree{}}
+}
+
 type parseState struct {
 	lineno     int // one-based line number, for error reporting
 	pageOffset int // page n refers to n+pageOffset-1 page of PDF
 
-	bookmarks *Tree
-	parent    []*Bookmark // stack of parents for nested bookmarks. invariant: len(parent) is the current nesting depth
-	prev      *Bookmark   // last bookmark processed
+	bookmarks *easypdf.BookmarkTree
+	parent    []*easypdf.Bookmark // stack of parents for nested bookmarks. invariant: len(parent) is the current nesting depth
+	prev      *easypdf.Bookmark   // last bookmark processed
 }
 
 type ParseError struct {
@@ -107,7 +113,7 @@ func (p *parseState) insertBookmark(depth int, page int, title string) error {
 	}
 
 	// Attach the bookmark to its parent.
-	b := &Bookmark{Page: page, Title: title}
+	b := &easypdf.Bookmark{Page: page, Title: title}
 	if len(p.parent) > 0 {
 		par := p.parent[len(p.parent)-1]
 		par.Children = append(par.Children, b)

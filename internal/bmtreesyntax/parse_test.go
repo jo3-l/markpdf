@@ -1,12 +1,15 @@
-package bmtree
+package bmtreesyntax
 
 import (
 	"errors"
 	"flag"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/jo3-l/markpdf/internal/easypdf"
 )
 
 var updateFlag = flag.Bool("update", false, "update or create snapshots")
@@ -28,11 +31,11 @@ func TestParseOK(t *testing.T) {
 			}
 			defer f.Close()
 
-			tree, err := ParseReader(f)
+			bookmarks, err := ParseReader(f)
 			if err != nil {
 				t.Fatal("unexpected error:", err)
 			}
-			got := dump(tree)
+			got := dumpBookmarks(bookmarks)
 
 			matchSnapshot(t, filepath.Join("testdata", "ok", testname+".snap"), got)
 		})
@@ -102,4 +105,30 @@ func matchSnapshot(t *testing.T, snapshotFile string, got string) {
 
 func normalizeLineEndings(s string) string {
 	return strings.ReplaceAll(s, "\r\n", "\n")
+}
+
+func dumpBookmarks(bookmarks *easypdf.BookmarkTree) string {
+	var sb strings.Builder
+	for i, b := range bookmarks.TopLevel {
+		if i > 0 {
+			sb.WriteByte('\n')
+		}
+		dumpBookmark(&sb, b, 0)
+	}
+	return sb.String()
+}
+
+func dumpBookmark(sb *strings.Builder, b *easypdf.Bookmark, depth int) {
+	for i := 0; i < depth; i++ {
+		sb.WriteByte('\t')
+	}
+
+	sb.WriteString("- ")
+	sb.WriteString(strconv.Quote(b.Title))
+	sb.WriteString(" @ p")
+	sb.WriteString(strconv.Itoa(b.Page))
+	for _, c := range b.Children {
+		sb.WriteByte('\n')
+		dumpBookmark(sb, c, depth+1)
+	}
 }
