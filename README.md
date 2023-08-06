@@ -5,7 +5,7 @@ friendly format used to specify bookmarks, invoking markpdf can often be more
 convenient than equivalent workflows using applications such as Adobe Acrobat.
 
 Below is an example of the bookmark format; a
-[complete explanation is available later in this document](#outline-format).
+[complete explanation is available later in this document](#bookmark-format).
 
 ```
 p1. Cover
