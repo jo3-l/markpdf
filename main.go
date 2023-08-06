@@ -14,7 +14,7 @@ import (
 )
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "usage: markpdf bookmarks input.pdf output.pdf [-r]\n")
+	fmt.Fprintf(os.Stderr, "usage: markpdf bookmarks.txt input.pdf output.pdf [-r]\n")
 	flag.PrintDefaults()
 	os.Exit(2)
 }
