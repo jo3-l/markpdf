@@ -1,7 +1,6 @@
 package easypdf
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/pdfcpu/pdfcpu/pkg/api"
@@ -49,7 +48,7 @@ func EditBookmarks(pdfFile *os.File, outputFilename string, replace bool, bookma
 
 	err = api.AddBookmarks(pdfFile, tmpFile, convertBookmarks(bookmarks), replace, nil)
 	if err != nil {
-		return fmt.Errorf("could not edit bookmarks: %s", err)
+		return err
 	}
 
 	return os.Rename(tmpFile.Name(), outputFilename)

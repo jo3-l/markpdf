@@ -55,12 +55,13 @@ func main() {
 
 	errs := RunChecks(AllChecks, bookmarks, pdfInfo)
 	if len(errs) > 0 {
-		log.Fatalf("bookmarks failed %d checks:\n%s", len(errs), errors.Join(errs...))
+		log.Fatalf("bookmarks failed %d checks:\n%s\n", len(errs), errors.Join(errs...))
 	}
 
 	fmt.Printf("adding %d bookmarks to PDF ... ", bookmarks.Count())
 	if err = easypdf.EditBookmarks(pdfFile, flag.Arg(2), *replaceFlag, bookmarks); err != nil {
-		log.Fatalln(err)
+		fmt.Println()
+		log.Fatalln("could not edit bookmarks:", err)
 	}
 	fmt.Println("ok")
 }
