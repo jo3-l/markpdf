@@ -37,7 +37,7 @@ func (*NonEmptyCheck) AppendErrors(errs []error, bookmarks *easypdf.BookmarkTree
 	return errs
 }
 
-// pdfcpu requires page numbers of bookmarks to be montonically increasing; see
+// pdfcpu requires page numbers of bookmarks to be monotonically increasing; see
 // https://github.com/pdfcpu/pdfcpu/issues/376.
 type MonotonicallyIncreasingPageNumsCheck struct{}
 
