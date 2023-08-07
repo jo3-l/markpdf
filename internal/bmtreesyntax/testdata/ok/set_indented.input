@@ -1,6 +1,6 @@
-p1. a
+a, 1
     set 3
-    p2. b
+    b, 2
     set 1
-    p1. c
-p2. e
+    c, 1
+e, 2

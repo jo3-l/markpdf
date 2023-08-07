@@ -1,14 +1,14 @@
 set 1
-p1. foo
-    p2. bar
-        p3. baz
+foo, 1
+    bar, 2
+        baz, 3
 
 set 5
-p1. a
-p2. b
-p3. c
+a, 1
+b, 2
+c, 3
 
 set 8
-p1. d
-p2. e
-p3. f
+d, 1
+e, 2
+f, 3

@@ -49,7 +49,7 @@ func (p ParseError) Error() string {
 	return fmt.Sprintf("line %d: %s", p.lineno, p.msg)
 }
 
-var bookmarkRe = regexp.MustCompile(`^(\s*)p(-?\d+)\.\s+(.+)`)
+var bookmarkRe = regexp.MustCompile(`^(\s*)(.+),\s+(-?\d+)`)
 
 func (p *parseState) process(line string) error {
 	trim := strings.TrimSpace(line)
@@ -71,19 +71,19 @@ func (p *parseState) process(line string) error {
 	// Don't use trimmed version of line; we need the leading indentation.
 	m := bookmarkRe.FindStringSubmatch(line)
 	if m == nil {
-		return p.errorf("invalid bookmark %q (should start with page number, then full stop, then title: e.g. 'p1. Introduction')", line)
+		return p.errorf("invalid bookmark %q (should start with title, then comma, then page number, e.g. 'Introduction, 1')", line)
 	}
 
-	page, err := strconv.Atoi(m[2])
+	page, err := strconv.Atoi(m[3])
 	if err != nil {
-		return p.errorf("invalid page number %q", m[2])
+		return p.errorf("invalid page number %q", m[3])
 	}
 
 	depth, err := p.indentDepth(m[1])
 	if err != nil {
 		return err
 	}
-	return p.insertBookmark(depth, p.pageOffset+page-1, m[3])
+	return p.insertBookmark(depth, p.pageOffset+page-1, m[2])
 }
 
 func (p *parseState) insertBookmark(depth int, page int, title string) error {

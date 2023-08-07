@@ -8,11 +8,11 @@ Below is an example of the bookmark format; a
 [complete explanation is available later in this document](#bookmark-format).
 
 ```
-p1. Cover
-p2. Contents
-p3. Topic 1. Stoichiometric Relationships
-    p3. 1.1: Particulate nature of matter
-    p7. 1.2: Molar volume of a gas and calculations
+Cover, 1
+Contents, 2
+Topic 1. Stoichiometric Relationships, 3
+    1.1: Particulate nature of matter, 3
+    1.2: Molar volume of a gas and calculations, 7
 # ...
 ```
 
@@ -33,20 +33,20 @@ contain whitespace or begin with a `#` will be ignored. A single bookmark has
 the following format:
 
 ```
-p<page_number>. <title>
+<title>, <page_number>
 ```
 
-For example, `p1. Introduction` specifies a bookmark titled `Introduction`
+For example, `Introduction, 1` specifies a bookmark titled `Introduction`
 pointing to page 1.
 
 Bookmarks may be arbitrarily nested using indentation to create a hierarchy. For
 example:
 
 ```
-p1. Data structures
-    p1. Stacks and queues
-        p3. Deques
-    p5. Circular lists
+Data structures, 1
+    Stacks and queues, 1
+        Deques, 3
+    Circular lists, 5
 ```
 
 corresponds to a bookmark hierarchy with one top-level bookmark, "Data structures",
@@ -57,16 +57,16 @@ has a child called "Deques".
 ### Custom starting page numbers
 
 When adding bookmarks according to a table of contents, it is often convenient
-to set a custom starting page, such that `p1` refers not to page 1 of the PDF
+to set a custom starting page, such that `1` refers not to page 1 of the PDF
 but rather to, say, page 7, the first page of content. To do this, use the `set`
 command. For example:
 
 ```
-p1. Cover
-p4. Table of Contents
+Cover, 1
+Table of Contents, 4
 
 set 7
-p1. Mechanics
+Mechanics, 1
 ```
 
 The above creates three bookmarks: one to page 1 of the PDF titled "Cover", one
