@@ -68,7 +68,7 @@ func convertBookmarks(bookmarks *BookmarkTree) []pdfcpu.Bookmark {
 			converted[i] = pdfcpu.Bookmark{
 				PageFrom: b.Page,
 				Title:    b.Title,
-				Children: convertAll(b.Children),
+				Kids: convertAll(b.Children),
 			}
 		}
 		return converted
